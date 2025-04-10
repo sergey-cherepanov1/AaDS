@@ -1,13 +1,16 @@
-name: CI Workflow
+name: Assignment 1 CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'Assignment1/**'
+  pull_request:
+    paths:
+      - 'Assignment1/**'
 
 jobs:
-  test-assignments:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        assignment: [1]
     steps:
       - uses: actions/checkout@v4
 
@@ -17,13 +20,17 @@ jobs:
           sudo apt-get install -y g++ make python3 libgtest-dev python3-pip
           python3 -m pip install pytest
 
-      - name: Build Assignment${{ matrix.assignment }}
-        working-directory: Assignment${{ matrix.assignment }}
+      - name: Build
+        working-directory: Assignment1
         run: make
-        
-      - name: Build and run Assignment${{ matrix.assignment }} tests 
-        working-directory: Assignment${{ matrix.assignment }}
+
+      - name: Run C++ tests
+        working-directory: Assignment1
         run: |
           make test
           ./test
+
+      - name: Run Python tests
+        working-directory: Assignment1
+        run: |
           python3 -m pytest tests.py -v
