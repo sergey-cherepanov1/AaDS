@@ -2,11 +2,11 @@ name: Assignment 1 CI
 
 on:
   push:
-    paths:
-      - 'Assignment1/**'
+    branches:
+      - 'assignment1'
   pull_request:
-    paths:
-      - 'Assignment1/**'
+    branches:
+      - 'main'
 
 jobs:
   test:
