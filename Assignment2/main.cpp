@@ -1,5 +1,5 @@
 /* Sergey Cherepanov st129987@student.spbu.ru
-   LabWork2
+   Assignment2
 */
 
 #include "gauss.h"

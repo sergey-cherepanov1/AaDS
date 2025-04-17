@@ -1,5 +1,5 @@
 /* Sergey Cherepanov st129987@student.spbu.ru
-   LabWork2
+   Assignment2
 */
 
 #ifndef GAUSS_H
@@ -10,6 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <random>
 #include <Eigen/Dense>
 
 Eigen::MatrixXd readCSV(std::string& filename)
@@ -133,6 +134,22 @@ Eigen::VectorXd solve(Eigen::MatrixXd A)
     }
     
     return ans;
+}
+
+Eigen::MatrixXd generateRandomMatrix(int rows, int cols, unsigned int seed)
+{
+    std::mt19937 gen(seed);
+    std::uniform_real_distribution<double> dist(-10.0, 10.0);
+
+    Eigen::MatrixXd mat(rows, cols);
+    for (int i = 0; i < rows; ++i)
+    {
+        for (int j = 0; j < cols; ++j)
+        {
+            mat(i, j) = dist(gen);
+        }
+    }
+    return mat;
 }
 
 #endif
