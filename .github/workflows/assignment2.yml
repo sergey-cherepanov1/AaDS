@@ -17,4 +17,4 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ make libgtest-dev
+          sudo apt-get install -y g++ make libgtest-dev libeigen3-dev 
