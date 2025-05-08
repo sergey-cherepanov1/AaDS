@@ -6,8 +6,9 @@
 
 int main()
 {
-    
-    std::vector<std::pair<char, double>> t = read("1");
+    std::string text = "";
+    std::vector<std::pair<char, double>> t = read("1", text);
+    std::cout << text << '\n';
     std::map<char, std::string> dict;
     for (auto& [key, value] : t)
     {
@@ -18,4 +19,5 @@ int main()
     {
         std::cout << '[' << key << "] = " << value << ";\n";
     }
+    write(text, dict);
 }

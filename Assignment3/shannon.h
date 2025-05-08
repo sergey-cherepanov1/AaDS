@@ -13,7 +13,7 @@
 #ifndef SHANNON_H
 #define SHANNON_H
 
-std::vector<std::pair<char, double>> read(std::string filename)
+std::vector<std::pair<char, double>> read(std::string filename, std::string& t)
 {
     std::ifstream in(filename, std::ios::binary | std::ios::in);
     if (!in.is_open())
@@ -35,8 +35,10 @@ std::vector<std::pair<char, double>> read(std::string filename)
             {
                 dict[c] = 1;
             }
+            t += c;
         }
     }
+    in.close();
     for (auto& v: dict)
     {
         v.second /= i;
@@ -50,6 +52,25 @@ std::vector<std::pair<char, double>> read(std::string filename)
     return sorted;
 }
 
+void write(std::string& text, std::map<char, std::string>& dict)
+{
+    std::ofstream out("encoded", std::ios::binary | std::ios::out);
+    if (!out.is_open())
+    {
+        std::cout << "Error opening file!" << std::endl;
+    }
+    for (auto c: text)
+    {
+        out << dict[c];
+    }
+    out.close();
+    std::ofstream file("dictionary", std::ios::binary | std::ios::out);
+    for (auto [key, value]: dict)
+    {
+        file << '[' << key << "] = " << value << ";\n";
+    }
+    file.close();
+}
 
 void encode(std::vector<std::pair<char, double>>& freq, std::map<char, std::string>& dict)
 {
