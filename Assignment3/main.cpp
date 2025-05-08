@@ -14,6 +14,6 @@ int main()
         dict[key] = "";
     }
     encode(t, dict);
-    writeCompressed(text, dict1);
+    writeCompressed(text, dict);
     readDecodeWrite();
 }
