@@ -7,17 +7,13 @@
 int main()
 {
     std::string text = "";
-    std::vector<std::pair<char, double>> t = read("1", text);
-    std::cout << text << '\n';
+    std::vector<std::pair<char, double>> t = readUncompressed("uncompressed", text);
     std::map<char, std::string> dict;
     for (auto& [key, value] : t)
     {
         dict[key] = "";
     }
     encode(t, dict);
-    for (auto& [key, value] : dict)
-    {
-        std::cout << '[' << key << "] = " << value << ";\n";
-    }
-    write(text, dict);
+    writeCompressed(text, dict1);
+    readDecodeWrite();
 }

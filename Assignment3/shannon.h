@@ -13,7 +13,7 @@
 #ifndef SHANNON_H
 #define SHANNON_H
 
-std::vector<std::pair<char, double>> read(std::string filename, std::string& t)
+std::vector<std::pair<char, double>> readUncompressed(std::string filename, std::string& t)
 {
     std::ifstream in(filename, std::ios::binary | std::ios::in);
     if (!in.is_open())
@@ -31,7 +31,8 @@ std::vector<std::pair<char, double>> read(std::string filename, std::string& t)
             if (dict.find(c) != dict.end())
             {
                 dict[c] += 1;
-            } else 
+            }
+            else
             {
                 dict[c] = 1;
             }
@@ -45,20 +46,55 @@ std::vector<std::pair<char, double>> read(std::string filename, std::string& t)
     }
     std::vector<std::pair<char, double>> sorted(dict.begin(), dict.end());
     std::sort(sorted.begin(), sorted.end(),
-        [](auto& a, auto& b) {
-            return a.second >= b.second;
-        }
-    );
+              [](auto& a, auto& b)
+    {
+        return a.second >= b.second;
+    }
+             );
     return sorted;
 }
 
-void write(std::string& text, std::map<char, std::string>& dict)
+void readDecodeWrite()
 {
-    std::ofstream out("encoded", std::ios::binary | std::ios::out);
-    if (!out.is_open())
+    std::ifstream file_dict("dictionary", std::ios::binary | std::ios::in);
+    if (!file_dict.is_open())
     {
         std::cout << "Error opening file!" << std::endl;
     }
+    std::map<std::string, char> dict;
+
+    std::string line;
+    while (std::getline(file_dict, line))
+    {
+        char c = line[0];
+        std::string code = line.substr(2);
+        dict[code] = c;
+    }
+    file_dict.close();
+    std::ifstream file("encoded", std::ios::binary | std::ios::in);
+    if (!file.is_open())
+    {
+        std::cout << "Error opening file!" << std::endl;
+    }
+    
+    std::ofstream out("decoded", std::ios::binary | std::ios::out);
+    char c;
+    std::string temp = "";
+    while (file.get(c))
+    {
+        temp += c;
+        if (dict.find(temp) != dict.end())
+        {
+            out << dict[temp];
+            temp = "";
+        }
+    }
+}
+
+void writeCompressed(std::string& text, std::map<char, std::string>& dict)
+{
+    std::ofstream out("encoded", std::ios::binary | std::ios::out);
+    
     for (auto c: text)
     {
         out << dict[c];
@@ -67,7 +103,7 @@ void write(std::string& text, std::map<char, std::string>& dict)
     std::ofstream file("dictionary", std::ios::binary | std::ios::out);
     for (auto [key, value]: dict)
     {
-        file << '[' << key << "] = " << value << ";\n";
+        file << key << '=' << value << '\n';
     }
     file.close();
 }
@@ -75,7 +111,10 @@ void write(std::string& text, std::map<char, std::string>& dict)
 void encode(std::vector<std::pair<char, double>>& freq, std::map<char, std::string>& dict)
 {
     int size = freq.size();
-    if (size == 1) {return;}
+    if (size == 1)
+    {
+        return;
+    }
     double sum = 0;
     for (auto& t: freq)
     {
@@ -110,7 +149,7 @@ void encode(std::vector<std::pair<char, double>>& freq, std::map<char, std::stri
         dict[freq[j].first] += "1";
         right.push_back(freq[j]);
     }
-    encode(left, dict); 
+    encode(left, dict);
     encode(right, dict);
 }
 
