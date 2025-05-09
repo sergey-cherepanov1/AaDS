@@ -1,5 +1,5 @@
 /* Sergey Cherepanov st129987@student.spbu.ru
-   Assignment2
+   Assignment3
 */
 
 #include "shannon.h"

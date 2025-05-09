@@ -1,5 +1,5 @@
 /* Sergey Cherepanov st129987@student.spbu.ru
-   Assignment2
+   Assignment3
 */
 
 #include <iostream>
@@ -76,7 +76,7 @@ void readDecodeWrite()
     {
         std::cout << "Error opening file!" << std::endl;
     }
-    
+
     std::ofstream out("decoded", std::ios::binary | std::ios::out);
     char c;
     std::string temp = "";
@@ -94,7 +94,7 @@ void readDecodeWrite()
 void writeCompressed(std::string& text, std::map<char, std::string>& dict)
 {
     std::ofstream out("encoded", std::ios::binary | std::ios::out);
-    
+
     for (auto c: text)
     {
         out << dict[c];

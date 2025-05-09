@@ -22,3 +22,9 @@ jobs:
       - name: Build
         working-directory: Assignment3
         run: make
+        
+      - name: Run C++ tests
+        working-directory: Assignment3
+        run: |
+          make test
+          ./test
