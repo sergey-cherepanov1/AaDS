@@ -64,6 +64,8 @@ void readDecodeWrite()
     std::map<std::string, char> dict;
 
     std::string line;
+    std::getline(file_dict, line);
+    int size = std::stoi(line);
     while (std::getline(file_dict, line))
     {
         char c = line[0];
@@ -71,41 +73,70 @@ void readDecodeWrite()
         dict[code] = c;
     }
     file_dict.close();
+    
     std::ifstream file("encoded", std::ios::binary | std::ios::in);
-    if (!file.is_open())
-    {
-        std::cout << "Error opening file!" << std::endl;
-    }
-
     std::ofstream out("decoded", std::ios::binary | std::ios::out);
-    char c;
-    std::string temp = "";
-    while (file.get(c))
-    {
-        temp += c;
-        if (dict.find(temp) != dict.end())
-        {
-            out << dict[temp];
-            temp = "";
+    
+    char byte;
+    std::string bits = "";
+    int t = 0;
+    while (file.get(byte)) {
+        for (int i = 7; i >= 0; --i) {
+            bool bit = byte & (1 << i);
+            bits += bit ? '1' : '0';
+
+            if (dict.find(bits) != dict.end()) {
+                out << dict[bits];
+                bits = "";
+                t++;
+                if (t == size)
+                {
+                    break;
+                }
+            }
         }
     }
+    file.close();
+    out.close();
 }
 
 void writeCompressed(std::string& text, std::map<char, std::string>& dict)
 {
-    std::ofstream out("encoded", std::ios::binary | std::ios::out);
-
-    for (auto c: text)
-    {
-        out << dict[c];
-    }
-    out.close();
-    std::ofstream file("dictionary", std::ios::binary | std::ios::out);
+    std::ofstream file("dictionary", std::ios::binary | std::ios::out);  
+    size_t size = text.size();
+    file << size << '\n'; 
     for (auto [key, value]: dict)
     {
         file << key << '=' << value << '\n';
     }
     file.close();
+
+    std::ofstream out("encoded", std::ios::binary);
+    char buffer = 0;
+    int bit_pos = 0;
+
+    for (auto c : text) {
+        for (auto bit : dict[c]) 
+        {
+            if (bit == '1')
+            {
+                buffer |= (1 << (7 - bit_pos));
+            }
+            bit_pos++;
+            if (bit_pos == 8) {
+                out.put(buffer);
+                buffer = 0;
+                bit_pos = 0;
+            }
+        }
+    }
+
+    if (bit_pos > 0) {
+        out.put(buffer);
+        buffer = 0;
+        bit_pos = 0;
+    }
+    out.close();
 }
 
 void encode(std::vector<std::pair<char, double>>& freq, std::map<char, std::string>& dict)
