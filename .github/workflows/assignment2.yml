@@ -1,0 +1,30 @@
+name: Assignment 2 CI
+
+on:
+  push:
+    branches:
+      - 'assignment2'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ make libgtest-dev libeigen3-dev 
+          
+      - name: Build
+        working-directory: Assignment2
+        run: make
+
+      - name: Run C++ tests
+        working-directory: Assignment2
+        run: |
+          make test
+          ./test
